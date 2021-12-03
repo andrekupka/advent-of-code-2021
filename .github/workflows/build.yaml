@@ -1,0 +1,33 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v2
+      - name: Use Gradle Cache
+        uses: actions/cache@v1
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - name: Setup JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Build and Test
+        run: ./gradlew build
+      - name: Coverage
+        run: ./gradlew jacocoTestReport
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v1
+        with:
+          name: coverage-report
+          path: build/reports/jacoco/test/html
