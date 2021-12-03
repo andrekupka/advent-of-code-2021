@@ -80,6 +80,8 @@ class SubmarineDiagnosticReport(
     }
 
     companion object {
+        fun fromString(input: String) = fromLines(input.lines())
+
         fun fromLines(lines: List<String>): SubmarineDiagnosticReport {
             val bitSize = lines.map { it.length }.distinct().single()
             val numbers = lines.map { it.toInt(radix = 2) }
