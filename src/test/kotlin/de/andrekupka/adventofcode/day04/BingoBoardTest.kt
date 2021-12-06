@@ -1,10 +1,7 @@
 package de.andrekupka.adventofcode.day04
 
 import assertk.assertThat
-import assertk.assertions.isEqualTo
-import assertk.assertions.isFailure
-import assertk.assertions.isInstanceOf
-import assertk.assertions.isSuccess
+import assertk.assertions.*
 import org.junit.jupiter.api.Test
 
 class BingoBoardTest {
@@ -42,5 +39,32 @@ class BingoBoardTest {
         val actualBoard = BingoBoard.fromLines(listOf("1 3", "5 12"))
 
         assertThat(BingoBoard(listOf(1, 3, 5, 12))).isEqualTo(actualBoard)
+    }
+
+    @Test
+    internal fun `mark should mark no field if non exists`() {
+        val actualBoard = BingoBoard.fromLines(listOf("1 2", "3 4"))
+
+        actualBoard.mark(5)
+
+        assertThat(actualBoard).isEqualTo(BingoBoard(listOf(1, 2, 3, 4)))
+    }
+
+    @Test
+    internal fun `mark should mark single field`() {
+        val actualBoard = BingoBoard.fromLines(listOf("1 2", "3 4"))
+
+        actualBoard.mark(2)
+
+        assertThat(actualBoard.isMarked(2)).isTrue()
+    }
+
+    @Test
+    internal fun `mark should mark multiple fields`() {
+        val actualBoard = BingoBoard.fromLines(listOf("1 2", "2 4"))
+
+        actualBoard.mark(2)
+
+        assertThat(actualBoard.isMarked(2)).isTrue()
     }
 }

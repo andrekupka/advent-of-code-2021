@@ -16,6 +16,15 @@ class BingoBoard(
 
     private val cells = cells.map { Cell(it) }
 
+    fun mark(number: Int) {
+        cells.withNumber(number).forEach { it.mark() }
+    }
+
+    fun isMarked(number: Int) =
+        cells.withNumber(number).all { it.marked }
+
+    private fun List<Cell>.withNumber(number: Int) = filter { it.value == number }
+
     override fun equals(other: Any?) =
         other is BingoBoard && cells == other.cells
 
@@ -25,7 +34,7 @@ class BingoBoard(
         .windowed(size = size, step = size)
         .joinToString(separator = System.lineSeparator()) { line ->
             line.joinToString(" ") { cell ->
-                cell.toString().padStart(2, ' ')
+                cell.toString()
             }
         }
 
@@ -36,6 +45,11 @@ class BingoBoard(
 
         fun mark() {
             this.marked = true
+        }
+
+        override fun toString(): String {
+            val marker = if (marked) "+" else " "
+            return "$marker$value".padStart(3, ' ')
         }
     }
 
