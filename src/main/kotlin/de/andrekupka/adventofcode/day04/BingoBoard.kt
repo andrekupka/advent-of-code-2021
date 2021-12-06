@@ -50,17 +50,22 @@ class BingoBoard(
     fun column(columnIndex: Int): List<Cell> {
         require(columnIndex in 0 until size)
 
-        return rowIndices.map { get(columnIndex, it) }
+        return rowIndices.map { get(it, columnIndex) }
     }
 
     fun mark(number: Int) {
         if (!isMarked(number)) {
-            cells.withNumber(number).forEach { it.mark() }
+            cells.withNumber(number).forEach { it.marked = true }
             markedList.add(number)
         }
     }
 
     fun isMarked(number: Int) = markedList.contains(number)
+
+    fun reset() {
+        cells.forEach { it.marked = false }
+        markedList.clear()
+    }
 
     private fun List<Cell>.withNumber(number: Int) = filter { it.value == number }
 
@@ -86,14 +91,7 @@ class BingoBoard(
             }
         }
 
-    data class Cell(val value: Int) {
-
-        var marked: Boolean = false
-            private set
-
-        fun mark() {
-            this.marked = true
-        }
+    data class Cell(val value: Int, var marked: Boolean = false) {
 
         override fun toString(): String {
             val marker = if (marked) "+" else " "
