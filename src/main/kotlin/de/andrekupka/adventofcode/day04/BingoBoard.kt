@@ -17,16 +17,50 @@ class BingoBoard(
 
     private val cells = cells.map { Cell(it) }
 
+    private val markedList = mutableListOf<Int>()
+
     val indices by lazy {
         (0 until size) cross (0 until size)
     }
 
-    fun mark(number: Int) {
-        cells.withNumber(number).forEach { it.mark() }
+    val rowIndices = 0 until size
+    val columnIndices = 0 until size
+
+    val rows by lazy {
+        rowIndices.map { row(it) }
     }
 
-    fun isMarked(number: Int) =
-        cells.withNumber(number).all { it.marked }
+    val columns by lazy {
+        columnIndices.map { column(it) }
+    }
+
+    val won
+        get() = rows.any { row -> row.all { it.marked } } or
+                columns.any { column -> column.all { it.marked } }
+
+    val score
+        get() = cells.filter { !it.marked }.sumOf { it.value } * markedList.last()
+
+    fun row(rowIndex: Int): List<Cell> {
+        require(rowIndex in 0 until size)
+
+        return columnIndices.map { get(rowIndex, it) }
+    }
+
+    fun column(columnIndex: Int): List<Cell> {
+        require(columnIndex in 0 until size)
+
+        return rowIndices.map { get(columnIndex, it) }
+    }
+
+    fun mark(number: Int) {
+        if (!isMarked(number)) {
+            cells.withNumber(number).forEach { it.mark() }
+            markedList.add(number)
+        }
+    }
+
+    fun isMarked(number: Int) = markedList.contains(number)
 
     private fun List<Cell>.withNumber(number: Int) = filter { it.value == number }
 
@@ -69,7 +103,7 @@ class BingoBoard(
 
     companion object {
         fun fromLines(lines: List<String>): BingoBoard {
-            val numbers = lines.map { it.split(" ") }.flatten().map { it.toInt() }
+            val numbers = lines.map { it.split("\\s+".toRegex()) }.flatten().map { it.toInt() }
             return BingoBoard(numbers)
         }
     }
