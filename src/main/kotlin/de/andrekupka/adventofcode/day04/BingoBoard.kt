@@ -16,13 +16,33 @@ class BingoBoard(
 
     private val cells = cells.map { Cell(it) }
 
-    private data class Cell(val value: Int) {
+    override fun equals(other: Any?) =
+        other is BingoBoard && cells == other.cells
+
+    override fun hashCode() = cells.hashCode()
+
+    override fun toString() = cells
+        .windowed(size = size, step = size)
+        .joinToString(separator = System.lineSeparator()) { line ->
+            line.joinToString(" ") { cell ->
+                cell.toString().padStart(2, ' ')
+            }
+        }
+
+    data class Cell(val value: Int) {
 
         var marked: Boolean = false
             private set
 
         fun mark() {
             this.marked = true
+        }
+    }
+
+    companion object {
+        fun fromLines(lines: List<String>): BingoBoard {
+            val numbers = lines.map { it.split(" ") }.flatten().map { it.toInt() }
+            return BingoBoard(numbers)
         }
     }
 }
