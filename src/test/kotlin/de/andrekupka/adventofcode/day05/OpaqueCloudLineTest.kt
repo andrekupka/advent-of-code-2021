@@ -2,7 +2,6 @@ package de.andrekupka.adventofcode.day05
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
 internal class OpaqueCloudLineTest {
@@ -20,4 +19,12 @@ internal class OpaqueCloudLineTest {
 
         assertThat(actualPoints).isEqualTo(listOf(Point(9, 7), Point(8, 7), Point(7, 7)))
     }
+
+    @Test
+    internal fun `should compute correct points for diagonal lines`() {
+        val actualPoints = OpaqueCloudLine(Point(9, 6), Point(7 ,8)).points
+
+        assertThat(actualPoints).isEqualTo(listOf(Point(9, 6), Point(8, 7), Point(7, 8)))
+    }
+
 }

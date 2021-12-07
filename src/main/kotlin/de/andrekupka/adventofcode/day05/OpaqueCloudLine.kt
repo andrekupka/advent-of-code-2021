@@ -1,5 +1,8 @@
 package de.andrekupka.adventofcode.day05
 
+import kotlin.math.abs
+import kotlin.math.max
+
 data class Point(
     val x: Int,
     val y: Int,
@@ -13,13 +16,15 @@ data class OpaqueCloudLine(
     val vertical = start.x == end.x
 
     val points by lazy {
-        if (horizontal) {
-            progression(start.x, end.x).map { Point(it, start.y) }
-        } else if (vertical) {
-            progression(start.y, end.y).map { Point(start.x, it) }
-        } else {
-            error("Only horizontal or vertical lines can be mapped to points.")
-        }
+        val xProgression = progression(start.x, end.x)
+        val yProgression = progression(start.y, end.y)
+
+        val stretchSize = max(xProgression.size, yProgression.size)
+
+        val xElements = xProgression.stretchToList(stretchSize)
+        val yElements = yProgression.stretchToList(stretchSize)
+
+        (xElements zip yElements).map { Point(it.first, it.second) }
     }
 
     private fun progression(start: Int, end: Int) =
@@ -28,4 +33,12 @@ data class OpaqueCloudLine(
         } else {
             start downTo end
         }
+
+    private val IntProgression.size get() = abs(last - first) + 1
+
+    private fun IntProgression.stretchToList(stretchSize: Int) = if (size == stretchSize) {
+        this
+    } else {
+        List(stretchSize) { first }
+    }
 }
