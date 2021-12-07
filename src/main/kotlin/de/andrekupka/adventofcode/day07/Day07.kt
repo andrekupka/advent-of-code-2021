@@ -10,5 +10,6 @@ fun main() {
     val constantPositionAndFuel = optimizeConstantFuelUsage(crabPositions)
     println("Optimal position ${constantPositionAndFuel.position} takes ${constantPositionAndFuel.fuelUsage} fuel with linear fuel usage")
 
-
+    val linearPositionAndFuel = optimizeLinearFuelUsage(crabPositions)
+    println("Optimal position ${linearPositionAndFuel.position} takes ${linearPositionAndFuel.fuelUsage} fuel with constant fuel usage")
 }

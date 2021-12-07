@@ -12,7 +12,7 @@ fun optimizeFuelUsageByEstimation(initialPositions: List<Int>, fuelEstimation: (
         "initial positions must not be empty"
     }
 
-    val possiblePositions = initialPositions.toSet()
+    val possiblePositions = initialPositions.minOrNull()!!..initialPositions.maxOrNull()!!
 
     return possiblePositions.map { targetPosition ->
         val fuelUsage = initialPositions.sumOf { initialPosition ->
@@ -27,3 +27,12 @@ fun optimizeConstantFuelUsage(
 ) = optimizeFuelUsageByEstimation(initialPositions) { initialPosition, targetPosition ->
     abs(targetPosition - initialPosition)
 }
+
+fun determineLinearFuelUsage(firstPosition: Int, secondPosition: Int): Int {
+    val distance = abs(secondPosition - firstPosition)
+    return (distance + 1) * distance / 2
+}
+
+fun optimizeLinearFuelUsage(
+    initialPositions: List<Int>
+) = optimizeFuelUsageByEstimation(initialPositions, ::determineLinearFuelUsage)
